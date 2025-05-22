@@ -22,21 +22,6 @@ public class LivreServiceImpl implements LivreServiceInterface {
         return livreRepository.findById(id).get();
     }
 
-    @Override
-    public Livre createLivre(Livre livre) {
-        return null;
-    }
-
-    @Override
-    public Livre updateLivre(Long id, Livre livre) {
-        return null;
-    }
-
-    @Override
-    public void deleteLivre(Long id) {
-
-    }
-
     public Livre creerLivre(Livre newLivre){
         if (!getAllLivres().contains(newLivre) ){
             return livreRepository.save(newLivre);
@@ -44,18 +29,18 @@ public class LivreServiceImpl implements LivreServiceInterface {
         return null;
     }
 
-    public Livre modifierLivre(Long id, Livre livreExistant){
-        if (getAllLivres().contains(livreExistant)){
-            Livre updateLivre = getLivreById(id);
-            updateLivre.setTitre(livreExistant.getTitre());
-            updateLivre.setAuteur(livreExistant.getAuteur());
-            updateLivre.setAnneePublication(livreExistant.getAnneePublication());
-            return livreRepository.save(updateLivre);
+    public Livre modifierLivre(Long id, Livre updateLivre){
+        if (livreRepository.existsById(id)){
+            Livre livreExistant = getLivreById(id);
+            livreExistant.setTitre(updateLivre.getTitre());
+            livreExistant.setAuteur(updateLivre.getAuteur());
+            livreExistant.setAnneePublication(updateLivre.getAnneePublication());
+            return livreRepository.save(livreExistant);
         }
         return null;
     }
 
-    public void SupprimerLivre(Long id){
+    public void supprimerLivre(Long id){
         if (getAllLivres().contains(getLivreById(id))){
             livreRepository.deleteById(id);
         }

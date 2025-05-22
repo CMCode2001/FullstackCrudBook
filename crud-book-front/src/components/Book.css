@@ -1,0 +1,223 @@
+/* Book.css : styles purs pour BookAdmin */
+#radix-«r0» > button{
+    display: none;
+}
+.bookadmin-bg {
+  min-height: 100vh;
+  background: #FFFCF6;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Avenir', 'Segoe UI', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
+}
+
+.bookadmin-header {
+  background: #732D24;
+  color: #fff;
+  padding: 2rem 3rem;
+  border-radius: 1.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1100px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+}
+
+.bookadmin-header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bookadmin-header-title span {
+  font-size: 1.5rem;
+}
+
+.bookadmin-header-title h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.btn-add-book {
+  background: #A8443D;
+  color: #fff;
+  height: 4rem;
+  padding: 1rem 3rem;
+  font-size: 2rem;
+  border-radius: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 12px 0 rgba(168,68,61,0.12);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-add-book:hover {
+  background: #8c332b;
+}
+
+.bookadmin-searchbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+
+.bookadmin-searchbar input {
+  width: 100%;
+  height: 3.5rem;
+  font-size: 1.2rem;
+  padding: 0 1.5rem;
+  border-radius: 0.8rem;
+  border: 2px solid #A8443D;
+  background: #f8fafc;
+  color: #222;
+  outline: none;
+  transition: border 0.2s;
+}
+.bookadmin-searchbar input:focus {
+  border-color: #732D24;
+}
+
+.bookadmin-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 800px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.bookadmin-empty {
+  text-align: center;
+  margin-top: 6rem;
+  color: #888;
+  font-size: 2rem;
+  width: 100%;
+  max-width: 800px;
+  padding: 4rem 0;
+  background: rgba(255,255,255,0.8);
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.04);
+}
+
+.bookadmin-table {
+  width: 100%;
+  max-width: 900px;
+  font-size: 1.15rem;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.95);
+  border-collapse: collapse;
+}
+.bookadmin-table th, .bookadmin-table td {
+  padding: 1.2rem 1.5rem;
+  text-align: left;
+}
+.bookadmin-table th {
+  background: #f7d9d4;
+  color: #A8443D;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.bookadmin-table tr:not(:last-child) {
+  border-bottom: 1px solid #f7d9d4;
+}
+.bookadmin-table td {
+  background: transparent;
+}
+
+.bookadmin-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn-edit, .btn-delete {
+  height: 2.8rem;
+  padding: 0 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 0.7rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-edit {
+  background: #fff;
+  color: #A8443D;
+  border: 2px solid #A8443D;
+}
+.btn-edit:hover {
+  background: #fbeee6;
+}
+.btn-delete {
+  background: #e11d48;
+  color: #fff;
+}
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+/* Dialog styles (à adapter selon votre implémentation) */
+.bookadmin-dialog-content {
+  background: #fff;
+  border-radius: 1.2rem;
+  padding: 2.5rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.bookadmin-dialog-content h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.bookadmin-dialog-content input {
+  height: 2.8rem;
+  font-size: 1.1rem;
+  border-radius: 0.7rem;
+  border: 2px solid #A8443D;
+  padding: 0 1rem;
+  margin-bottom: 0.7rem;
+}
+.bookadmin-dialog-content input:focus {
+  border-color: #732D24;
+}
+.bookadmin-dialog-content .dialog-error {
+  color: #e11d48;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.bookadmin-dialog-content .btn-save {
+  background: #A8443D;
+  color: #fff;
+  width: 100%;
+  height: 2.8rem;
+  font-size: 1.1rem;
+  border-radius: 0.7rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.bookadmin-dialog-content .btn-save:hover {
+  background: #8c332b;
+}

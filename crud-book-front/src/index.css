@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&display=swap');
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+body, html, #root {
+  font-family: 'Avenir', 'Segoe UI', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.Btn-Add{
+    max-width: 100%;
+    padding: 10px 8px;
+    background-color: white;
+    border-radius: 30px;
+    border: 1px solid #000;
+    color: #000;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .Btn-Add:hover {
+    background-color: #000;
+    color: #fff;
+  }     

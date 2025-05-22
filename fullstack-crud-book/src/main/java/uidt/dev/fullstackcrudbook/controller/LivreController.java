@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api-book")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class LivreController {
 
     private final LivreServiceImpl livreService;
@@ -17,7 +18,7 @@ public class LivreController {
         this.livreService = livreService;
     }
 
-    @GetMapping("/allbook")
+    @GetMapping("/allbooks")
     public List<Livre> getallLivres() {
         return livreService.getAllLivres();
     }
@@ -39,6 +40,6 @@ public class LivreController {
 
     @DeleteMapping("/delete/{id}")
     public void deleteLivre(@PathVariable Long id) {
-        livreService.SupprimerLivre(id);
+        livreService.supprimerLivre(id);
     }
 }
