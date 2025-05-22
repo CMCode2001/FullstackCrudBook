@@ -199,13 +199,21 @@ export default function BookAdmin() {
                           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M8 6v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                         </button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="bookadmin-dialog-content bookadmin-dialog-alert">
                         <AlertDialogHeader>
-                          Are you sure you want to delete this book?
+                          <h2 style={{fontSize: '1.4rem', fontWeight: 'bold', color: '#A8443D', marginBottom: '1rem', textAlign: 'center'}}>Suppression du livre</h2>
+                          <div style={{fontSize: '1.1rem', color: '#222', marginBottom: '1.5rem', textAlign: 'center'}}>
+                            Êtes-vous sûr de vouloir supprimer ce livre&nbsp;?
+                            <br/>
+                            <span style={{display:'inline-block', margin:'0.7rem 0', fontWeight:'bold', color:'#A8443D', fontSize:'1.15rem'}}>
+                              {selectedToDelete?.titre ? `« ${selectedToDelete.titre} »` : ''}
+                            </span><br/>
+                            Cette action est <span style={{color:'#e11d48', fontWeight:'bold'}}>irréversible</span>.
+                          </div>
                         </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleDelete}>Yes, delete</AlertDialogAction>
+                        <AlertDialogFooter style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '1.5rem', marginTop: '2rem' }}>
+                          <AlertDialogCancel style={{ minWidth: '120px', background: '#b0b0b0', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }}>Annuler</AlertDialogCancel>
+                          <AlertDialogAction style={{ minWidth: '120px', background: '#e11d48', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }} onClick={handleDelete}>Oui, supprimer</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
