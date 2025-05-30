@@ -23,7 +23,7 @@ public class LivreServiceImpl implements LivreServiceInterface {
     }
 
     public Livre creerLivre(Livre newLivre){
-        if (!getAllLivres().contains(newLivre) ){
+        if (newLivre.getTitre() == null || newLivre.getTitre().isEmpty() ) {
             return livreRepository.save(newLivre);
         }
         return null;
@@ -35,6 +35,8 @@ public class LivreServiceImpl implements LivreServiceInterface {
             livreExistant.setTitre(updateLivre.getTitre());
             livreExistant.setAuteur(updateLivre.getAuteur());
             livreExistant.setAnneePublication(updateLivre.getAnneePublication());
+            livreExistant.setDescription(updateLivre.getDescription());
+            livreExistant.setGenre(updateLivre.getGenre());
             return livreRepository.save(livreExistant);
         }
         return null;
