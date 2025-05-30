@@ -1,7 +1,7 @@
 import React from 'react'
 import BookAdmin from '../components/BookAdmin'
 
-export default function LandingPage() {
+export default function Bibliotheque() {
   return (
     <div>
         <BookAdmin/>

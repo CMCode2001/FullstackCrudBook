@@ -6,7 +6,7 @@ import { fetchLivres, createLivre, deleteLivre, updateLivre } from '../services/
 import { toast } from "sonner";
 import { z } from "zod";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "./ui/alert-dialog";
-import './Book.css';
+import '../CSS/Book.css';
 
 const bookSchema = z.object({
   titre: z.string().min(1, "Title is required"),
@@ -118,7 +118,7 @@ export default function BookAdmin() {
       <header className="bookadmin-header">
         <div className="bookadmin-header-title">
           <span><img src={Book} alt="Book Icon" width={80} /></span>
-          <h1>Book Admin</h1>
+          <h1>MaBiblio.</h1>
         </div>
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
           <DialogTrigger asChild>
