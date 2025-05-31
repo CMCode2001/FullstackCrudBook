@@ -9,19 +9,19 @@ import uidt.dev.fullstackcrudbook.dto.RegisterRequest;
 import uidt.dev.fullstackcrudbook.service.AuthService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api-book/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/inscription")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/connexion")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         AuthResponse response = authService.authenticate(request);
         return ResponseEntity.ok(response);

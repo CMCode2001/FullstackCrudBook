@@ -23,10 +23,10 @@ public class LivreServiceImpl implements LivreServiceInterface {
     }
 
     public Livre creerLivre(Livre newLivre){
-        if (newLivre.getTitre() == null || newLivre.getTitre().isEmpty() ) {
-            return livreRepository.save(newLivre);
+        if (newLivre.getTitre().isEmpty() ) {
+            return null;
         }
-        return null;
+        return livreRepository.save(newLivre);
     }
 
     public Livre modifierLivre(Long id, Livre updateLivre){
