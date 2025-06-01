@@ -123,3 +123,17 @@
   border-radius: 50%;
   background: #f3eaea;
 }
+
+.input-password-eye input {
+  padding-right: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.input-password-eye span {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 2;
+}

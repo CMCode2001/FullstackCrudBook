@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "./ui/dialog";
+import Book from '../assets/book.png';
 import BookReader from '../assets/bookreader.svg';
 
 import { toast } from "sonner";
@@ -13,7 +14,9 @@ import api from '../services/api';
 const bookSchema = z.object({
   titre: z.string().min(1, "Title is required"),
   auteur: z.string().min(1, "Author is required"),
-  anneePublication: z.string().refine(val => /^\d{4}$/.test(val), "Year must be a 4-digit number")
+  anneePublication: z.string().refine(val => /^\d{4}$/.test(val), "Year must be a 4-digit number"),
+  genre: z.string().optional(),
+  description: z.string().optional()
 });
 
 export default function BookAdmin() {
@@ -23,7 +26,7 @@ export default function BookAdmin() {
   const [error, setError] = useState('');
   const [showDialog, setShowDialog] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
-  const [bookForm, setBookForm] = useState({ titre: '', auteur: '', anneePublication: '' });
+  const [bookForm, setBookForm] = useState({ titre: '', auteur: '', anneePublication: '', genre: '', description: '' });
   const [formError, setFormError] = useState('');
   const [selectedToDelete, setSelectedToDelete] = useState(null);
   const [viewBook, setViewBook] = useState(null); // <-- Ajout état pour la vue
@@ -51,12 +54,14 @@ export default function BookAdmin() {
     const payload = {
       titre: bookForm.titre,
       auteur: bookForm.auteur,
-      anneePublication: parseInt(bookForm.anneePublication)
+      anneePublication: parseInt(bookForm.anneePublication),
+      genre: bookForm.genre ,
+      description: bookForm.description 
     };
     console.log('createLivre payload', payload);
     await api.post('/create', payload);
     toast.success("Book added successfully");
-    setBookForm({ titre: '', auteur: '', anneePublication: '' });
+    setBookForm({ titre: '', auteur: '', anneePublication: '', genre: '', description: '' });
     setEditingBook(null);
     setFormError('');
     setShowDialog(false);
@@ -69,7 +74,9 @@ export default function BookAdmin() {
     const result = bookSchema.safeParse({
       titre: bookForm.titre,
       auteur: bookForm.auteur,
-      anneePublication: bookForm.anneePublication
+      anneePublication: bookForm.anneePublication,
+      genre: bookForm.genre,
+      description: bookForm.description
     });
     console.log('update validation result', result);
     if (!result.success) {
@@ -79,13 +86,15 @@ export default function BookAdmin() {
     const payload = {
       titre: bookForm.titre,
       auteur: bookForm.auteur,
-      anneePublication: parseInt(bookForm.anneePublication)
+      anneePublication: parseInt(bookForm.anneePublication),
+      genre: bookForm.genre,
+      description: bookForm.description
     };
     console.log('updateLivre payload', payload, 'id:', editingBook?.id);
     const response = await api.put(`/update/${editingBook.id}`, payload);
     console.log('updateLivre response', response);
     toast.success("Book updated successfully");
-    setBookForm({ titre: '', auteur: '', anneePublication: '' });
+    setBookForm({ titre: '', auteur: '', anneePublication: '', genre: '', description: '' });
     setEditingBook(null);
     setFormError('');
     setShowDialog(false);
@@ -93,14 +102,14 @@ export default function BookAdmin() {
   };
 
   const openEditDialog = (livre) => {
-    setBookForm({ titre: livre.titre, auteur: livre.auteur, anneePublication: livre.anneePublication.toString() });
+    setBookForm({ titre: livre.titre, auteur: livre.auteur, anneePublication: livre.anneePublication.toString(), genre: livre.genre || '', description: livre.description || '' });
     setEditingBook(livre);
     setShowDialog(true);
   };
 
   const handleDelete = async () => {
     await api.delete(`/delete/${selectedToDelete.id}`);
-    toast.success("Book deleted successfully");
+    toast.success(selectedToDelete.titre +" deleted successfully");
     setSelectedToDelete(null);
     loadLivres();
   };
@@ -169,7 +178,7 @@ export default function BookAdmin() {
           <DialogTrigger asChild>
             <button className="btn-add-book" onClick={() => {
               setEditingBook(null);
-              setBookForm({ titre: '', auteur: '', anneePublication: '' });
+              setBookForm({ titre: '', auteur: '', anneePublication: '', genre: '', description: '' });
               setFormError('');
               setShowDialog(true);
               
@@ -198,12 +207,22 @@ export default function BookAdmin() {
               type="number" 
               value={bookForm.anneePublication} 
               onChange={(e) => setBookForm({ ...bookForm, anneePublication: e.target.value })} 
+
+            />
+            <input
+              placeholder="Genre "
+              value={bookForm.genre}
+              onChange={(e) => setBookForm({ ...bookForm, genre: e.target.value })}
+            />
+            <textarea
+              placeholder="Description " 
+              value={bookForm.description}
+              onChange={(e) => setBookForm({ ...bookForm, description: e.target.value })}
+              style={{ height: '60px', borderRadius: '8px', padding: '0.5rem', fontSize: '1rem' }}
             />
             {formError && <div className="dialog-error">{formError}</div>}
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-
-              {/* <button className="btn-save" style={{ background: '#b0b0b0', color: '#fff' }} onClick={() => setShowDialog(false)} type="button">Cancel</button> */}
-
+              <button className="btn-save" style={{ background: '#b0b0b0', color: '#fff' }} onClick={() => setShowDialog(false)} type="button">Cancel</button>
               {editingBook ? (
                 <button className="btn-save" onClick={handleUpdateLivre}>Modifier ✎</button>
               ) : (

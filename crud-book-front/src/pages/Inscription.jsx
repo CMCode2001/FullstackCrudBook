@@ -13,6 +13,7 @@ export default function Inscription() {
     email: '',
     password: ''
   });
+  const [showPassword, setShowPassword] = useState(false); // <-- Ajout état
 
   const handleInscription = async (e) => {
     e.preventDefault();
@@ -57,12 +58,35 @@ export default function Inscription() {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
-          <input
-            type="password"
-            placeholder="Mot de passe"
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-          />
+          <div className="input-password-eye" style={{ position: 'relative', width: '100%' }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Mot de passe"
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              required
+              style={{ paddingRight: '2.5rem', width: '100%' }}
+            />
+            <span
+              onClick={() => setShowPassword((prev) => !prev)}
+              style={{
+                position: 'absolute',
+                right: '0.9rem',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                cursor: 'pointer',
+                zIndex: 2
+              }}
+              title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            >
+              {showPassword ? (
+                // Icône œil barré
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8443D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-5 0-9.27-3.11-11-7 1.21-2.61 3.31-4.77 6-6.13"/><path d="M1 1l22 22"/><path d="M9.53 9.53A3.5 3.5 0 0 0 12 15.5c1.38 0 2.63-.83 3.16-2.03"/><path d="M14.47 14.47A3.5 3.5 0 0 0 12 8.5c-1.38 0-2.63.83-3.16 2.03"/></svg>
+              ) : (
+                // Icône œil ouvert
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8443D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              )}
+            </span>
+          </div>
           
           <button type="submit" className="btn-inscription">Inscription</button>
           <div className="inscription-sep">ou</div>
