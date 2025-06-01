@@ -9,7 +9,7 @@ import Bibliotheque from './pages/Bibliotheque'
 function App() {
 
   return (
-    <div className="App">
+    <div >
       <Router>
         <Routes>
           <Route path="/" element={<Acceuil />} />

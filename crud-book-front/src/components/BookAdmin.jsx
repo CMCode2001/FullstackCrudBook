@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "./ui/dialog";
 import Book from '../assets/book.png';
-import { fetchLivres, createLivre, deleteLivre, updateLivre } from '../services/LivreServices';
+import BookReader from '../assets/bookreader.svg';
+
 import { toast } from "sonner";
 import { z } from "zod";
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "./ui/alert-dialog";
 import '../CSS/Book.css';
+import api from '../services/api';
 
 const bookSchema = z.object({
   titre: z.string().min(1, "Title is required"),
@@ -23,6 +25,7 @@ export default function BookAdmin() {
   const [bookForm, setBookForm] = useState({ titre: '', auteur: '', anneePublication: '' });
   const [formError, setFormError] = useState('');
   const [selectedToDelete, setSelectedToDelete] = useState(null);
+  const [viewBook, setViewBook] = useState(null); // <-- Ajout état pour la vue
 
   const handleCreateLivre = async () => {
     console.log('handleCreateLivre', bookForm);
@@ -42,7 +45,7 @@ export default function BookAdmin() {
       anneePublication: parseInt(bookForm.anneePublication)
     };
     console.log('createLivre payload', payload);
-    await createLivre(payload);
+    await api.post('/create', payload);
     toast.success("Book added successfully");
     setBookForm({ titre: '', auteur: '', anneePublication: '' });
     setEditingBook(null);
@@ -70,7 +73,7 @@ export default function BookAdmin() {
       anneePublication: parseInt(bookForm.anneePublication)
     };
     console.log('updateLivre payload', payload, 'id:', editingBook?.id);
-    const response = await updateLivre(editingBook.id, payload);
+    const response = await api.put(`/update/${editingBook.id}`, payload);
     console.log('updateLivre response', response);
     toast.success("Book updated successfully");
     setBookForm({ titre: '', auteur: '', anneePublication: '' });
@@ -87,7 +90,7 @@ export default function BookAdmin() {
   };
 
   const handleDelete = async () => {
-    await deleteLivre(selectedToDelete.id);
+    await api.delete(`/delete/${selectedToDelete.id}`);
     toast.success("Book deleted successfully");
     setSelectedToDelete(null);
     loadLivres();
@@ -95,7 +98,7 @@ export default function BookAdmin() {
 
   const loadLivres = async () => {
     try {
-      const response = await fetchLivres();
+      const response = await api.get('/allbooks');
       console.log('fetchLivres response', response);
       setLivres(response.data);
       setError('');
@@ -117,6 +120,7 @@ export default function BookAdmin() {
     <div className="bookadmin-bg">
       <header className="bookadmin-header">
         <div className="bookadmin-header-title">
+          
           <span><img src={Book} alt="Book Icon" width={80} /></span>
           <h1>MaBiblio.</h1>
         </div>
@@ -136,9 +140,24 @@ export default function BookAdmin() {
             <DialogTitle asChild>
               <h2>{editingBook ? 'Modifier Livre' : 'Ajouter Nouveau Livre'}</h2>
             </DialogTitle>
-            <input placeholder="Titre" value={bookForm.titre} onChange={(e) => setBookForm({ ...bookForm, titre: e.target.value })} />
-            <input placeholder="Auteur" value={bookForm.auteur} onChange={(e) => setBookForm({ ...bookForm, auteur: e.target.value })} />
-            <input placeholder="Annee Publication" type="number" value={bookForm.anneePublication} onChange={(e) => setBookForm({ ...bookForm, anneePublication: e.target.value })} />
+            <input 
+              placeholder="Titre" 
+              value={bookForm.titre} 
+              onChange={(e) => setBookForm({ ...bookForm, titre: e.target.value })} 
+            />
+
+            <input 
+              placeholder="Auteur" 
+              value={bookForm.auteur} 
+              onChange={(e) => setBookForm({ ...bookForm, auteur: e.target.value })} 
+            />
+
+            <input 
+              placeholder="Annee Publication" 
+              type="number" 
+              value={bookForm.anneePublication} 
+              onChange={(e) => setBookForm({ ...bookForm, anneePublication: e.target.value })} 
+            />
             {formError && <div className="dialog-error">{formError}</div>}
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
               <button className="btn-save" style={{ background: '#b0b0b0', color: '#fff' }} onClick={() => setShowDialog(false)} type="button">Cancel</button>
@@ -171,58 +190,92 @@ export default function BookAdmin() {
           No books found.
         </div>
       ) : (
-        <table className="bookadmin-table" style={{width: '100%', maxWidth: '1200px'}}>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Title</th>
-              <th>Auteur</th>
-              <th>Année Publication</th>
-              <th className="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLivres.map((livre) => (
-              <tr key={livre.id}>
-                <td>{livre.id}</td>
-                <td>{livre.titre}</td>
-                <td>{livre.auteur}</td>
-                <td>{livre.anneePublication}</td>
-                <td>
-                  <div className="bookadmin-actions">
-                    <button className="btn-edit" onClick={() => openEditDialog(livre)} title="Edit">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8443D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                    </button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button className="btn-delete" onClick={() => setSelectedToDelete(livre)} title="Delete">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M8 6v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="bookadmin-dialog-content bookadmin-dialog-alert">
-                        <AlertDialogHeader>
-                          <h2 style={{fontSize: '1.4rem', fontWeight: 'bold', color: '#A8443D', marginBottom: '1rem', textAlign: 'center'}}>Suppression du livre</h2>
-                          <div style={{fontSize: '1.1rem', color: '#222', marginBottom: '1.5rem', textAlign: 'center'}}>
-                            Êtes-vous sûr de vouloir supprimer ce livre&nbsp;?
-                            <br/>
-                            <span style={{display:'inline-block', margin:'0.7rem 0', fontWeight:'bold', color:'#A8443D', fontSize:'1.15rem'}}>
-                              {selectedToDelete?.titre ? `« ${selectedToDelete.titre} »` : ''}
-                            </span><br/>
-                            Cette action est <span style={{color:'#e11d48', fontWeight:'bold'}}>irréversible</span>.
-                          </div>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '1.5rem', marginTop: '2rem' }}>
-                          <AlertDialogCancel style={{ minWidth: '120px', background: '#b0b0b0', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }}>Annuler</AlertDialogCancel>
-                          <AlertDialogAction style={{ minWidth: '120px', background: '#e11d48', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }} onClick={handleDelete}>Oui, supprimer</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+        <>
+          {/* Boîte de dialogue pour voir les détails */}
+          <Dialog open={!!viewBook} onOpenChange={() => setViewBook(null)}>
+            <DialogContent className="bookadmin-dialog-content bookadmin-dialog-details">
+              <DialogTitle asChild>
+                <h2>Détails du livre</h2>
+              </DialogTitle>
+              {viewBook && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '2rem',
+                  padding: '1rem'
+                }}>
+                  <div style={{ minWidth: 100 }}>
+                    <img src={BookReader} alt="Livre" width={100} style={{borderRadius: '12px', boxShadow: '0 2px 8px #eaf3ff'}} />
                   </div>
-                </td>
+                  <div style={{ flex: 1 }}>
+                    <div style={{marginBottom: '0.7rem'}}><b>Titre :</b> {viewBook.titre}</div>
+                    <div style={{marginBottom: '0.7rem'}}><b>Auteur :</b> {viewBook.auteur}</div>
+                    <div style={{marginBottom: '0.7rem'}}><b>Année :</b> {viewBook.anneePublication}</div>
+                    <div style={{marginBottom: '0.7rem'}}><b>Genre :</b> {viewBook.genre || <span style={{color:'#aaa'}}>Non renseigné</span>}</div>
+                    <div style={{marginBottom: '0.7rem'}}><b>Description :</b> {viewBook.description || <span style={{color:'#aaa'}}>Non renseignée</span>}</div>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+
+          <table className="bookadmin-table" style={{width: '100%', maxWidth: '1200px'}}>
+            <thead>
+              <tr>
+                {/* <th>Id</th> */}
+                <th>Title</th>
+                <th>Auteur</th>
+                <th>Année Publication</th>
+                <th className="text-right">Actions Suplementaires</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredLivres.map((livre) => (
+                <tr key={livre.id}>
+                  {/* <td>{livre.id}</td> */}
+                  <td>{livre.titre}</td>
+                  <td>{livre.auteur}</td>
+                  <td>{livre.anneePublication}</td>
+                  <td>
+                    <div className="bookadmin-actions">
+                      {/* Bouton œil pour voir les détails */}
+                      <button className="btn-view" onClick={() => setViewBook(livre)} title="Voir détails" style={{marginRight: '0.5rem'}}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d7be5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      <button className="btn-edit" onClick={() => openEditDialog(livre)} title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8443D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                      </button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button className="btn-delete" onClick={() => setSelectedToDelete(livre)} title="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M8 6v-1a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bookadmin-dialog-content bookadmin-dialog-alert">
+                          <AlertDialogHeader>
+                            <h2 style={{fontSize: '1.4rem', fontWeight: 'bold', color: '#A8443D', marginBottom: '1rem', textAlign: 'center'}}>Suppression du livre</h2>
+                            <div style={{fontSize: '1.1rem', color: '#222', marginBottom: '1.5rem', textAlign: 'center'}}>
+                              Êtes-vous sûr de vouloir supprimer ce livre&nbsp;?
+                              <br/>
+                              <span style={{display:'inline-block', margin:'0.7rem 0', fontWeight:'bold', color:'#A8443D', fontSize:'1.15rem'}}>
+                                {selectedToDelete?.titre ? `« ${selectedToDelete.titre} »` : ''}
+                              </span><br/>
+                              Cette action est <span style={{color:'#e11d48', fontWeight:'bold'}}>irréversible</span>.
+                            </div>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '1.5rem', marginTop: '2rem' }}>
+                            <AlertDialogCancel style={{ minWidth: '120px', background: '#b0b0b0', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }}>Annuler</AlertDialogCancel>
+                            <AlertDialogAction style={{ minWidth: '120px', background: '#e11d48', color: '#fff', borderRadius: '0.7rem', fontWeight: 'bold', fontSize: '1.1rem', height: '2.8rem', border: 'none', cursor: 'pointer' }} onClick={handleDelete}>Oui, supprimer</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );

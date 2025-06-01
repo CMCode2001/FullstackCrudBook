@@ -172,6 +172,28 @@
   background: #b91c1c;
 }
 
+.btn-view {
+  background: #eaf3ff;
+  border: none;
+  border-radius: 50%;
+  padding: 7px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-view:hover {
+  background: #d0e6ff;
+  box-shadow: 0 0 0 2px #2d7be5;
+}
+
+.btn-view svg {
+  display: block;
+}
+
 /* Dialog styles (à adapter selon votre implémentation) */
 .bookadmin-dialog-content {
   background: #fff;
@@ -221,3 +243,9 @@
 .bookadmin-dialog-content .btn-save:hover {
   background: #8c332b;
 }
+
+/* .bookadmin-dialog-details button[aria-label="Close"],
+.bookadmin-dialog-details .dialog-close,
+.bookadmin-dialog-details .close {
+  display: none !important;
+} */
