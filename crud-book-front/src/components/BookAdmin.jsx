@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "./ui/dialog";
-import Book from '../assets/book.png';
 import BookReader from '../assets/bookreader.svg';
 
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ const bookSchema = z.object({
 });
 
 export default function BookAdmin() {
+  const navigate = useNavigate();
   const [livres, setLivres] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
@@ -26,6 +27,14 @@ export default function BookAdmin() {
   const [formError, setFormError] = useState('');
   const [selectedToDelete, setSelectedToDelete] = useState(null);
   const [viewBook, setViewBook] = useState(null); // <-- Ajout état pour la vue
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedAuteur, setSelectedAuteur] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Nombre de livres par page
+
+  // Récupérer la liste unique des genres et auteurs pour les options
+  const genres = Array.from(new Set(livres.map(livre => livre.genre).filter(Boolean)));
+  const auteurs = Array.from(new Set(livres.map(livre => livre.auteur).filter(Boolean)));
 
   const handleCreateLivre = async () => {
     console.log('handleCreateLivre', bookForm);
@@ -112,15 +121,47 @@ export default function BookAdmin() {
     loadLivres();
   }, []);
 
+  // Appliquer les filtres
   const filteredLivres = livres.filter(livre =>
-    livre.titre.toLowerCase().includes(searchTerm.toLowerCase())
+    livre.titre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedGenre === '' || livre.genre === selectedGenre) &&
+    (selectedAuteur === '' || livre.auteur === selectedAuteur)
   );
 
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentLivres = filteredLivres.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredLivres.length / itemsPerPage);
+
   return (
+    <>
+    {/* Flèche retour */}
+        <button
+          className="bookadmin-back"
+          onClick={() => navigate('/')}
+          title="Retour à l'accueil"
+          style={{
+            position: 'absolute',
+            top: '2rem',
+            left: '1rem',
+            border: '1px solid #A8443D',
+            borderRadius: '50%',
+            margin:'0',
+            cursor: 'pointer',
+            marginRight: '2rem',
+            padding: 0
+          }}
+        >
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#A8443D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
     <div className="bookadmin-bg">
-      <header className="bookadmin-header">
+            <header className="bookadmin-header">
+
         <div className="bookadmin-header-title">
-          
           <span><img src={Book} alt="Book Icon" width={80} /></span>
           <h1>MaBiblio.</h1>
         </div>
@@ -160,7 +201,9 @@ export default function BookAdmin() {
             />
             {formError && <div className="dialog-error">{formError}</div>}
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-              <button className="btn-save" style={{ background: '#b0b0b0', color: '#fff' }} onClick={() => setShowDialog(false)} type="button">Cancel</button>
+
+              {/* <button className="btn-save" style={{ background: '#b0b0b0', color: '#fff' }} onClick={() => setShowDialog(false)} type="button">Cancel</button> */}
+
               {editingBook ? (
                 <button className="btn-save" onClick={handleUpdateLivre}>Modifier ✎</button>
               ) : (
@@ -171,12 +214,34 @@ export default function BookAdmin() {
         </Dialog>
       </header>
 
-      <div className="bookadmin-searchbar">
+      <div className="bookadmin-searchbar" style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
         <input
           placeholder="🔍︎ Rechercher un livre ..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <select
+          className="bookadmin-select"
+          value={selectedGenre}
+          onChange={e => setSelectedGenre(e.target.value)}
+          style={{ minWidth: 180 }}
+        >
+          <option value="">Tous les genres</option>
+          {genres.map((genre, idx) => (
+            <option key={idx} value={genre}>{genre}</option>
+          ))}
+        </select>
+        <select
+          className="bookadmin-select"
+          value={selectedAuteur}
+          onChange={e => setSelectedAuteur(e.target.value)}
+          style={{ minWidth: 180 }}
+        >
+          <option value="">Tous les auteurs</option>
+          {auteurs.map((auteur, idx) => (
+            <option key={idx} value={auteur}>{auteur}</option>
+          ))}
+        </select>
       </div>
 
       {error && (
@@ -230,7 +295,7 @@ export default function BookAdmin() {
               </tr>
             </thead>
             <tbody>
-              {filteredLivres.map((livre) => (
+              {currentLivres.map((livre) => (
                 <tr key={livre.id}>
                   {/* <td>{livre.id}</td> */}
                   <td>{livre.titre}</td>
@@ -275,8 +340,30 @@ export default function BookAdmin() {
               ))}
             </tbody>
           </table>
+
+          {/* Pagination */}
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0 1rem 0', gap: '0.5rem' }}>
+            <button
+              className="bookadmin-pagination-btn"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Précédent
+            </button>
+            <span style={{ padding: '0 1rem', fontWeight: 'bold' }}>
+              Page {currentPage} / {Math.ceil(filteredLivres.length / itemsPerPage)}
+            </span>
+            <button
+              className="bookadmin-pagination-btn"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, Math.ceil(filteredLivres.length / itemsPerPage)))}
+              disabled={currentPage === Math.ceil(filteredLivres.length / itemsPerPage) || filteredLivres.length === 0}
+            >
+              Suivant
+            </button>
+          </div>
         </>
       )}
     </div>
+    </>
   );
 }

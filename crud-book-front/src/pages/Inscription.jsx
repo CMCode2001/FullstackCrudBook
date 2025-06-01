@@ -73,7 +73,12 @@ export default function Inscription() {
             Inscription avec Google
             
           </button>
-          <p style={{textAlign:'center'}}>J'ai déjà un compte ! <a style={{color:'#A8443D', textDecoration:'none'}} href="/connexion"><b> Se Connecter </b></a></p>
+          <p style={{textAlign:'center'}}>
+            J'ai déjà un compte ! 
+            <span style={{color:'#A8443D',cursor:'pointer'}} onClick={() => navigate ('/connexion' )}>
+              <b> Se Connecter </b>
+            </span>
+          </p>
         </form>
       </div>
     </div>

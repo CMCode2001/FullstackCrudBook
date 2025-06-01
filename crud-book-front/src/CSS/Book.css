@@ -244,8 +244,48 @@
   background: #8c332b;
 }
 
+.bookadmin-select {
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.7rem;
+  border: 1.5px solid #A8443D;
+  background: #fff;
+  color: #A8443D;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 6px #eaeaea;
+  margin-right: 0.5rem;
+}
+
+.bookadmin-select:focus {
+  border-color: #2d7be5;
+  box-shadow: 0 0 0 2px #eaf3ff;
+}
+
+.bookadmin-pagination-btn {
+  background: #A8443D;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.bookadmin-pagination-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
 /* .bookadmin-dialog-details button[aria-label="Close"],
 .bookadmin-dialog-details .dialog-close,
 .bookadmin-dialog-details .close {
   display: none !important;
 } */
+
+.bookadmin-back:hover svg {
+  stroke: #2d7be5;
+  transition: stroke 0.2s;
+}
