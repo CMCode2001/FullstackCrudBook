@@ -17,7 +17,18 @@ public class CurrentUserController {
     private final AuthService authService;
 
     @GetMapping("/current")
-    public UserResponse getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        return authService.getCurrentUser(userDetails.getUsername());
+    public UserResponse getCurrentUser(@AuthenticationPrincipal Object principal) {
+        String email;
+
+        if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
+            email = userDetails.getUsername();
+        } else if (principal instanceof uidt.dev.fullstackcrudbook.model.CustomOAuth2User customUser) {
+            email = customUser.getUser().getEmail(); // ou getEmail() si c'est défini comme tel
+        } else {
+            throw new RuntimeException("Utilisateur non authentifié");
+        }
+
+        return authService.getCurrentUser(email);
     }
+
 }

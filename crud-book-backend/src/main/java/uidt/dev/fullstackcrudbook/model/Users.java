@@ -9,43 +9,32 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nomComplet;
+
     @Column(unique = true)
     private String email;
+
     private String password;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Livre> listLivres;
+    @Enumerated(EnumType.STRING)
+    private Provider provider; // GOOGLE, LOCAL
 
-    public Users(String nomComplet, String email, String password) {
+    @Enumerated(EnumType.STRING)
+    private Role role; // USER, ADMIN
+
+    // Constructeurs
+    public Users(String nomComplet, String email, String password, Provider provider, Role role) {
         this.nomComplet = nomComplet;
         this.email = email;
         this.password = password;
+        this.provider = provider;
+        this.role = role;
     }
 
-    public Users() {}
-
-    public Long getId() {
-        return id;
+    public Users() {
+        this.role = Role.USER; // Valeur par défaut
     }
 
-    public String getNomComplet() {
-        return nomComplet;
-    }
-    public void setNomComplet(String nomComplet) {
-        this.nomComplet = nomComplet;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    // Getters/Setters (Lombok @Data les génère automatiquement)
 }
