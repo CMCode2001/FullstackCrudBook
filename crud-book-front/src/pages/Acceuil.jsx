@@ -5,6 +5,7 @@ import LogoBook from '../assets/bookSVG.svg';
 import '../CSS/Acceuil.css';
 import api from '../services/api';
 import bookreader from '../assets/bookreader.svg';
+import { toast } from 'sonner';
 
 export default function Acceuil() {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ export default function Acceuil() {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     setUser(null);
+    toast.success('Déconnexion réussie !');
     navigate('/');
   };
 
