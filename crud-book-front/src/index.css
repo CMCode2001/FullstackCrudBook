@@ -30,6 +30,6 @@ body, html, #root {
     background-color: #000;
     color: #fff;
   }     
-#radix-«ro» > button, #radix-«rl» > button, #radix-«r1a» > button, #radix-«r1d» > button{
+#radix-«ro» > button, #radix-«rl» > button, #radix-«r1a» > button, #radix-«r1d» > button, #radix-«r3» > button, #radix-«r1g» > button {
     display: none;
 }

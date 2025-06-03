@@ -188,7 +188,7 @@ export default function BookAdmin() {
           </DialogTrigger>
           <DialogContent className="bookadmin-dialog-content">
             <DialogTitle asChild>
-              <h2>{editingBook ? 'Modifier Livre' : 'Ajouter Nouveau Livre'}</h2>
+              <h2>{editingBook ? 'Modifier Livre 𓂃🖊' : '🕮 Ajouter Nouveau Livre 𓂃🖊'}</h2>
             </DialogTitle>
             <input 
               placeholder="Titre" 
@@ -279,7 +279,7 @@ export default function BookAdmin() {
           <Dialog open={!!viewBook} onOpenChange={() => setViewBook(null)}>
             <DialogContent className="bookadmin-dialog-content bookadmin-dialog-details">
               <DialogTitle asChild>
-                <h2>Détails du livre</h2>
+                <h2>🕮 Détails du livre 𓂃🖊</h2>
               </DialogTitle>
               {viewBook && (
                 <div style={{
@@ -292,7 +292,7 @@ export default function BookAdmin() {
                     <img src={BookReader} alt="Livre" width={100} style={{borderRadius: '12px', boxShadow: '0 2px 8px #eaf3ff'}} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{marginBottom: '0.7rem'}}><b>Titre :</b> {viewBook.titre}</div>
+                    <div style={{marginBottom: '0.7rem'}}><b> Titre :</b> {viewBook.titre}</div>
                     <div style={{marginBottom: '0.7rem'}}><b>Auteur :</b> {viewBook.auteur}</div>
                     <div style={{marginBottom: '0.7rem'}}><b>Année :</b> {viewBook.anneePublication}</div>
                     <div style={{marginBottom: '0.7rem'}}><b>Genre :</b> {viewBook.genre || <span style={{color:'#aaa'}}>Non renseigné</span>}</div>
