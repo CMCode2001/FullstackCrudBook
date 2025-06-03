@@ -5,13 +5,16 @@ import Connexion from './pages/Connexion'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Acceuil from './pages/Acceuil'
 import Bibliotheque from './pages/Bibliotheque'
+import GoogleCallback from './services/GoogleCallback'
 
 function App() {
 
   return (
-    <div >
+    <div >  
       <Router>
         <Routes>
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
+          {/* Routes principales */}
           <Route path="/" element={<Acceuil />} />
           <Route path="/bibliotheque" element={<Bibliotheque />} />
           <Route path="/inscription" element={<Inscription />} />
